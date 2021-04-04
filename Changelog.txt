@@ -1,4 +1,45 @@
+Version 2.1.187
+    Fixed a ClassCastException error involving Rupture
+
 Version 2.1.186
+    Rupture has been reworked to solve a few outstanding issues (see notes)
+    Fixed an exploit involving enchantments (thanks TheBusyBiscuit)
+    Fixed a very small memory leak that would only happen in very rare situations
+    Fixed a bug where XP wasn't granted while sneaking and interacting with a berry bush
+    Gore no longer applies Rupture
+    Gore no longer sends a message to the Wolf owner when it triggers
+    Gore no longer sends a message to players that are hit by it
+    Rupture no longer sends a message telling you that your target is bleeding
+    Updated locale string 'Swords.SubSkill.Rupture.Description'
+    Updated locale string 'Swords.SubSkill.Rupture.Stat.Extra'
+    Updated locale string 'Swords.Combat.Rupture.Note'
+    Added locale string 'Swords.SubSkill.Rupture.Stat.TickDamage'
+    Added locale string 'Swords.SubSkill.Rupture.Stat.ExplosionDamage'
+    Added 'Skills.Swords.Rupture.Rupture_Mechanics.Chance_To_Apply_On_Hit' to advanced.yml
+    Added 'Skills.Swords.Rupture.Rupture_Mechanics.Duration_In_Seconds.Against_Players' to advanced.yml
+    Added 'Skills.Swords.Rupture.Rupture_Mechanics.Duration_In_Seconds.Against_Mobs' to advanced.yml
+    Added 'Skills.Swords.Rupture.Rupture_Mechanics.Tick_Interval_Damage.Against_Players' to advanced.yml
+    Added 'Skills.Swords.Rupture.Rupture_Mechanics.Tick_Interval_Damage.Against_Mobs' to advanced.yml
+    Added 'Skills.Swords.Rupture.Rupture_Mechanics.Explosion_Damage.Against_Players' to advanced.yml
+    Added 'Skills.Swords.Rupture.Rupture_Mechanics.Explosion_Damage.Against_Mobs' to advanced.yml
+    Removed 'Skills.Swords.Rupture.ChanceMax' from advanced.yml
+    Removed 'Skills.Swords.Rupture.MaxBonusLevel.Standard' from advanced.yml
+    Removed 'Skills.Swords.Rupture.MaxBonusLevel.RetroMode' from advanced.yml
+    Removed 'Skills.Swords.Rupture.MaxTicks' from advanced.yml
+    Removed 'Skills.Swords.Rupture.BaseTicks' from advanced.yml
+    Removed 'Skills.Swords.Rupture.DamagePlayer' from advanced.yml
+    Removed 'Skills.Swords.Rupture.DamageMobs' from advanced.yml
+
+    NOTES:
+    The old Rupture would constantly interfere with your ability to do a Sweep Attack/Swipe with swords, the new one solves this problem
+    Targets will bleed and take "pure" damage while bleeding, this never kills the target. It will reduce them to 0.01 HP.
+    After 5 seconds of not applying Rupture on the target Rupture explodes dealing a large amount of damage, this damage is not pure and is affected by armor etc.
+    Rupture no longer tells you that you that you applied it to the target, it should be obvious from the sounds/particle effects
+    The new Rupture no longer constantly interferes with the vanilla Swipe (the AOE attack built into Minecraft)
+    The new Rupture has not had a fine tuned balance pass, I will be balancing it frequently after this patch, it may be too weak or too strong in its current form
+    Rupture does not stack between players, whoever applied Rupture first determines its strength, this will change in the future (Stronger Ruptures will overwrite weaker ones)
+    When you reapply rupture it immediately triggers a damage tick
+
 
 
 Version 2.1.185

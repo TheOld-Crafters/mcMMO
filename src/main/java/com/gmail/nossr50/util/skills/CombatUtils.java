@@ -93,10 +93,9 @@ public final class CombatUtils {
             mcMMOPlayer.checkAbilityActivation(PrimarySkillType.SWORDS);
         }
 
-        if(target.getHealth() - event.getFinalDamage() >= 1)
-        {
+        if(target.getHealth() - event.getFinalDamage() > 0) {
             if (swordsManager.canUseRupture()) {
-                swordsManager.ruptureCheck(target);
+                swordsManager.processRupture(target);
             }
         }
 
@@ -714,7 +713,7 @@ public final class CombatUtils {
                         NotificationManager.sendPlayerInformation((Player)entity, NotificationType.SUBSKILL_MESSAGE, "Swords.Combat.SS.Struck");
                     }
 
-                    UserManager.getPlayer(attacker).getSwordsManager().ruptureCheck(target);
+                    UserManager.getPlayer(attacker).getSwordsManager().processRupture(target);
                     break;
 
                 case AXES:
