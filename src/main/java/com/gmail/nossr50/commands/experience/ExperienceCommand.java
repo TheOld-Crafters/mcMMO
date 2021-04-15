@@ -7,6 +7,7 @@ import com.gmail.nossr50.locale.LocaleLoader;
 import com.gmail.nossr50.mcMMO;
 import com.gmail.nossr50.util.commands.CommandUtils;
 import com.gmail.nossr50.util.player.UserManager;
+import com.gmail.nossr50.util.skills.SkillTools;
 import com.google.common.collect.ImmutableList;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -44,13 +45,13 @@ public abstract class ExperienceCommand implements TabExecutor {
                     return true;
                 }
 
-                skill = PrimarySkillType.getSkill(args[0]);
+                skill = mcMMO.p.getSkillTools().matchSkill(args[0]);
 
                 if (args[1].equalsIgnoreCase("all")) {
                     skill = null;
                 }
 
-                if (skill != null && skill.isChildSkill())
+                if (skill != null && SkillTools.isChildSkill(skill))
                 {
                     sender.sendMessage(LocaleLoader.getString("Commands.Skill.ChildSkill"));
                     return true;
@@ -77,13 +78,13 @@ public abstract class ExperienceCommand implements TabExecutor {
                     return true;
                 }
 
-                skill = PrimarySkillType.getSkill(args[1]);
+                skill = mcMMO.p.getSkillTools().matchSkill(args[1]);
 
                 if (args[1].equalsIgnoreCase("all")) {
                     skill = null;
                 }
 
-                if (skill != null && skill.isChildSkill())
+                if (skill != null && SkillTools.isChildSkill(skill))
                 {
                     sender.sendMessage(LocaleLoader.getString("Commands.Skill.ChildSkill"));
                     return true;
@@ -144,7 +145,7 @@ public abstract class ExperienceCommand implements TabExecutor {
                 List<String> playerNames = CommandUtils.getOnlinePlayerNames(sender);
                 return StringUtil.copyPartialMatches(args[0], playerNames, new ArrayList<>(playerNames.size()));
             case 2:
-                return StringUtil.copyPartialMatches(args[1], PrimarySkillType.SKILL_NAMES, new ArrayList<>(PrimarySkillType.SKILL_NAMES.size()));
+                return StringUtil.copyPartialMatches(args[1], mcMMO.p.getSkillTools().LOCALIZED_SKILL_NAMES, new ArrayList<>(mcMMO.p.getSkillTools().LOCALIZED_SKILL_NAMES.size()));
             default:
                 return ImmutableList.of();
         }
@@ -165,13 +166,13 @@ public abstract class ExperienceCommand implements TabExecutor {
             sender.sendMessage(LocaleLoader.getString("Commands.addlevels.AwardAll.2", playerName));
         }
         else {
-            sender.sendMessage(LocaleLoader.getString("Commands.addlevels.AwardSkill.2", skill.getName(), playerName));
+            sender.sendMessage(LocaleLoader.getString("Commands.addlevels.AwardSkill.2", mcMMO.p.getSkillTools().getLocalizedSkillName(skill), playerName));
         }
     }
 
     protected void editValues(Player player, PlayerProfile profile, PrimarySkillType skill, int value, boolean isSilent) {
         if (skill == null) {
-            for (PrimarySkillType primarySkillType : PrimarySkillType.NON_CHILD_SKILLS) {
+            for (PrimarySkillType primarySkillType : SkillTools.NON_CHILD_SKILLS) {
                 handleCommand(player, profile, primarySkillType, value);
             }
 

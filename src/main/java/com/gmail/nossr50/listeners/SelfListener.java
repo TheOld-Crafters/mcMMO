@@ -1,6 +1,5 @@
 package com.gmail.nossr50.listeners;
 
-import com.gmail.nossr50.config.Config;
 import com.gmail.nossr50.config.experience.ExperienceConfig;
 import com.gmail.nossr50.datatypes.experience.XPGainReason;
 import com.gmail.nossr50.datatypes.player.McMMOPlayer;
@@ -13,6 +12,7 @@ import com.gmail.nossr50.util.player.PlayerLevelUtils;
 import com.gmail.nossr50.util.player.UserManager;
 import com.gmail.nossr50.util.scoreboards.ScoreboardManager;
 import com.gmail.nossr50.util.skills.RankUtils;
+import com.gmail.nossr50.util.skills.SkillTools;
 import com.gmail.nossr50.worldguard.WorldGuardManager;
 import com.gmail.nossr50.worldguard.WorldGuardUtils;
 import org.bukkit.entity.Player;
@@ -45,7 +45,7 @@ public class SelfListener implements Listener {
             //Reset the delay timer
             RankUtils.resetUnlockDelayTimer();
 
-            if(Config.getInstance().getScoreboardsEnabled())
+            if(mcMMO.p.getGeneralConfig().getScoreboardsEnabled())
                 ScoreboardManager.handleLevelUp(player, skill);
         }
     }
@@ -55,7 +55,7 @@ public class SelfListener implements Listener {
         Player player = event.getPlayer();
 
         if(player.isOnline()) {
-            if(Config.getInstance().getScoreboardsEnabled())
+            if(mcMMO.p.getGeneralConfig().getScoreboardsEnabled())
                 ScoreboardManager.handleXp(player, event.getSkill());
         }
     }
@@ -64,7 +64,7 @@ public class SelfListener implements Listener {
     public void onAbility(McMMOPlayerAbilityActivateEvent event) {
         Player player = event.getPlayer();
         if(player.isOnline()) {
-            if(Config.getInstance().getScoreboardsEnabled())
+            if(mcMMO.p.getGeneralConfig().getScoreboardsEnabled())
                 ScoreboardManager.cooldownUpdate(event.getPlayer(), event.getSkill());
         }
     }
@@ -133,7 +133,7 @@ public class SelfListener implements Listener {
             return;
         }
 
-        if (primarySkillType.isChildSkill()) {
+        if (SkillTools.isChildSkill(primarySkillType)) {
             return;
         }
 
@@ -141,7 +141,7 @@ public class SelfListener implements Listener {
 
         float guaranteedMinimum = ExperienceConfig.getInstance().getDiminishedReturnsCap() * rawXp;
 
-        float modifiedThreshold = (float) (threshold / primarySkillType.getXpModifier() * ExperienceConfig.getInstance().getExperienceGainsGlobalMultiplier());
+        float modifiedThreshold = (float) (threshold / ExperienceConfig.getInstance().getFormulaSkillModifier(primarySkillType) * ExperienceConfig.getInstance().getExperienceGainsGlobalMultiplier());
         float difference = (mcMMOPlayer.getProfile().getRegisteredXpGain(primarySkillType) - modifiedThreshold) / modifiedThreshold;
 
         if (difference > 0) {
