@@ -183,6 +183,7 @@ public class mcMMO extends JavaPlugin {
     @Override
     public void onEnable() {
         try {
+            setupFilePaths();
             generalConfig = new GeneralConfig(getDataFolder()); //Load before skillTools
             skillTools = new SkillTools(this); //Load after general config
 
@@ -206,7 +207,6 @@ public class mcMMO extends JavaPlugin {
 
             upgradeManager = new UpgradeManager();
 
-            setupFilePaths();
 
             modManager = new ModManager();
 

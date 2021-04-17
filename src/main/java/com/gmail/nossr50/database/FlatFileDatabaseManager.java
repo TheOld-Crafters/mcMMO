@@ -17,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
-import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -484,15 +483,16 @@ public final class FlatFileDatabaseManager implements DatabaseManager {
         return statsList.subList(Math.min(fromIndex, statsList.size()), Math.min(fromIndex + statsPerPage, statsList.size()));
     }
 
-    public Map<PrimarySkillType, Integer> readRank(String playerName) {
+    public @NotNull HashMap<PrimarySkillType, Integer> readRank(String playerName) {
         updateLeaderboards();
 
-        Map<PrimarySkillType, Integer> skills = new EnumMap<PrimarySkillType, Integer>(PrimarySkillType.class);
+        HashMap<PrimarySkillType, Integer> skills = new HashMap<>();
 
         for (PrimarySkillType skill : SkillTools.NON_CHILD_SKILLS) {
             skills.put(skill, getPlayerRank(playerName, playerStatHash.get(skill)));
         }
 
+        //TODO: Gross
         skills.put(null, getPlayerRank(playerName, powerLevels));
 
         return skills;
@@ -1072,7 +1072,7 @@ public final class FlatFileDatabaseManager implements DatabaseManager {
             try {
                 // Open the file to write the player
                 bufferedWriter = new BufferedWriter(new FileWriter(usersFilePath, true));
-                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm");
                 LocalDateTime localDateTime = LocalDateTime.now();
                 bufferedWriter.append("# mcMMO Database created on ").append(localDateTime.format(dateTimeFormatter)).append("\r\n"); //Empty file
             } catch (Exception e) {
