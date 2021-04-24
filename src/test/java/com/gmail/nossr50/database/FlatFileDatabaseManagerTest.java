@@ -1,6 +1,5 @@
 package com.gmail.nossr50.database;
 
-import com.gmail.nossr50.TestUtil;
 import com.gmail.nossr50.database.flatfile.LeaderboardStatus;
 import com.gmail.nossr50.datatypes.database.DatabaseType;
 import com.gmail.nossr50.datatypes.player.PlayerProfile;
@@ -9,11 +8,6 @@ import com.gmail.nossr50.datatypes.skills.PrimarySkillType;
 import com.gmail.nossr50.datatypes.skills.SuperAbilityType;
 import com.gmail.nossr50.util.skills.SkillTools;
 import com.google.common.io.Files;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Statistic;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,6 +15,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.io.*;
 import java.net.URI;
@@ -34,6 +29,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 //This class uses JUnit5/Jupiter
 public class FlatFileDatabaseManagerTest {
@@ -89,7 +85,7 @@ public class FlatFileDatabaseManagerTest {
 
     @AfterEach
     public void tearDown() {
-        TestUtil.recursiveDelete(tempDir);
+        recursiveDelete(tempDir);
         db = null;
     }
 
@@ -395,16 +391,16 @@ public class FlatFileDatabaseManagerTest {
         String playerName = "nossr50";
         UUID uuid = UUID.fromString("588fe472-1c82-4c4e-9aa1-7eefccb277e3");
 
-        TestOfflinePlayer player = new TestOfflinePlayer(playerName, uuid);
+        Player player = initMockPlayer(playerName, uuid);
         PlayerProfile profile1 = db.loadPlayerProfile(player);
         testHealthyDataProfileValues(playerName, uuid, profile1);
 
         String updatedName = "updatedName";
-        TestOfflinePlayer updatedNamePlayer = new TestOfflinePlayer(updatedName, uuid);
+        Player updatedNamePlayer = initMockPlayer(updatedName, uuid);
         PlayerProfile updatedNameProfile = db.loadPlayerProfile(updatedNamePlayer);
         testHealthyDataProfileValues(updatedName, uuid, updatedNameProfile);
 
-        TestOfflinePlayer shouldNotExist = new TestOfflinePlayer("doesntexist", new UUID(0, 1));
+        Player shouldNotExist = initMockPlayer("doesntexist", new UUID(0, 1));
         PlayerProfile profile3 = db.loadPlayerProfile(shouldNotExist);
         assertFalse(profile3.isLoaded());
     }
@@ -833,187 +829,28 @@ public class FlatFileDatabaseManagerTest {
         assertTrue(dataFlags.contains(flag));
     }
 
-    private class TestOfflinePlayer implements OfflinePlayer {
-
-        private final @NotNull String name;
-        private final @NotNull UUID uuid;
-
-        private TestOfflinePlayer(@NotNull String name, @NotNull UUID uuid) {
-            this.name = name;
-            this.uuid = uuid;
-        }
-
-        @Override
-        public boolean isOnline() {
-            return false;
-        }
-
-        @Nullable
-        @Override
-        public String getName() {
-            return name;
-        }
-
-        @NotNull
-        @Override
-        public UUID getUniqueId() {
-            return uuid;
-        }
-
-        @Override
-        public boolean isBanned() {
-            return false;
-        }
-
-        @Override
-        public boolean isWhitelisted() {
-            return false;
-        }
-
-        @Override
-        public void setWhitelisted(boolean value) {
-
-        }
-
-        @Nullable
-        @Override
-        public Player getPlayer() {
-            return null;
-        }
-
-        @Override
-        public long getFirstPlayed() {
-            return 0;
-        }
-
-        @Override
-        public long getLastPlayed() {
-            return 0;
-        }
-
-        @Override
-        public boolean hasPlayedBefore() {
-            return false;
-        }
-
-        @Nullable
-        @Override
-        public Location getBedSpawnLocation() {
-            return null;
-        }
-
-        @Override
-        public void incrementStatistic(@NotNull Statistic statistic) throws IllegalArgumentException {
-
-        }
-
-        @Override
-        public void decrementStatistic(@NotNull Statistic statistic) throws IllegalArgumentException {
-
-        }
-
-        @Override
-        public void incrementStatistic(@NotNull Statistic statistic, int amount) throws IllegalArgumentException {
-
-        }
-
-        @Override
-        public void decrementStatistic(@NotNull Statistic statistic, int amount) throws IllegalArgumentException {
-
-        }
-
-        @Override
-        public void setStatistic(@NotNull Statistic statistic, int newValue) throws IllegalArgumentException {
-
-        }
-
-        @Override
-        public int getStatistic(@NotNull Statistic statistic) throws IllegalArgumentException {
-            return 0;
-        }
-
-        @Override
-        public void incrementStatistic(@NotNull Statistic statistic, @NotNull Material material) throws IllegalArgumentException {
-
-        }
-
-        @Override
-        public void decrementStatistic(@NotNull Statistic statistic, @NotNull Material material) throws IllegalArgumentException {
-
-        }
-
-        @Override
-        public int getStatistic(@NotNull Statistic statistic, @NotNull Material material) throws IllegalArgumentException {
-            return 0;
-        }
-
-        @Override
-        public void incrementStatistic(@NotNull Statistic statistic, @NotNull Material material, int amount) throws IllegalArgumentException {
-
-        }
-
-        @Override
-        public void decrementStatistic(@NotNull Statistic statistic, @NotNull Material material, int amount) throws IllegalArgumentException {
-
-        }
-
-        @Override
-        public void setStatistic(@NotNull Statistic statistic, @NotNull Material material, int newValue) throws IllegalArgumentException {
-
-        }
-
-        @Override
-        public void incrementStatistic(@NotNull Statistic statistic, @NotNull EntityType entityType) throws IllegalArgumentException {
-
-        }
-
-        @Override
-        public void decrementStatistic(@NotNull Statistic statistic, @NotNull EntityType entityType) throws IllegalArgumentException {
-
-        }
-
-        @Override
-        public int getStatistic(@NotNull Statistic statistic, @NotNull EntityType entityType) throws IllegalArgumentException {
-            return 0;
-        }
-
-        @Override
-        public void incrementStatistic(@NotNull Statistic statistic, @NotNull EntityType entityType, int amount) throws IllegalArgumentException {
-
-        }
-
-        @Override
-        public void decrementStatistic(@NotNull Statistic statistic, @NotNull EntityType entityType, int amount) {
-
-        }
-
-        @Override
-        public void setStatistic(@NotNull Statistic statistic, @NotNull EntityType entityType, int newValue) {
-
-        }
-
-        @NotNull
-        @Override
-        public Map<String, Object> serialize() {
-            return null;
-        }
-
-        @Override
-        public boolean isOp() {
-            return false;
-        }
-
-        @Override
-        public void setOp(boolean value) {
-
-        }
+    @NotNull
+    private Player initMockPlayer(@NotNull String name, @NotNull UUID uuid) {
+        Player mockPlayer = mock(Player.class);
+        Mockito.when(mockPlayer.getName()).thenReturn(name);
+        Mockito.when(mockPlayer.getUniqueId()).thenReturn(uuid);
+        return mockPlayer;
     }
 
     private static class DebugFilter implements Filter {
-
         @Override
         public boolean isLoggable(LogRecord record) {
             return false;
         }
     }
+
+    public static void recursiveDelete(@NotNull File directoryToBeDeleted) {
+        if (directoryToBeDeleted.isDirectory()) {
+            for (File file : directoryToBeDeleted.listFiles()) {
+                recursiveDelete(file);
+            }
+        }
+        directoryToBeDeleted.delete();
+    }
+
 }

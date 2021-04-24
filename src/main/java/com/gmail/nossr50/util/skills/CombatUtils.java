@@ -93,9 +93,7 @@ public final class CombatUtils {
         }
 
         if(target.getHealth() - event.getFinalDamage() > 0) {
-            if (swordsManager.canUseRupture()) {
-                swordsManager.processRupture(target);
-            }
+            swordsManager.processRupture(target);
         }
 
         //Add Stab Damage
@@ -712,7 +710,7 @@ public final class CombatUtils {
                         NotificationManager.sendPlayerInformation((Player)entity, NotificationType.SUBSKILL_MESSAGE, "Swords.Combat.SS.Struck");
                     }
 
-                    UserManager.getPlayer(attacker).getSwordsManager().processRupture(target);
+                    UserManager.getPlayer(attacker).getSwordsManager().processRupture(livingEntity);
                     break;
 
                 case AXES:
