@@ -26,11 +26,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MiningManager extends SkillManager {
+
+    public static final String BUDDING_AMETHYST = "budding_amethyst";
+
     public MiningManager(McMMOPlayer mcMMOPlayer) {
         super(mcMMOPlayer, PrimarySkillType.MINING);
     }
@@ -119,6 +123,9 @@ public class MiningManager extends SkillManager {
 
         tnt.setMetadata(mcMMO.tntMetadataKey, mmoPlayer.getPlayerMetadata());
         tnt.setFuseTicks(0);
+        if (mcMMO.getCompatibilityManager().getMinecraftGameVersion().isAtLeast(1, 16, 4)) {
+            tnt.setSource(player);
+        }
         targetBlock.setType(Material.AIR);
 
         mmoPlayer.setAbilityDATS(SuperAbilityType.BLAST_MINING, System.currentTimeMillis());
@@ -132,29 +139,6 @@ public class MiningManager extends SkillManager {
      * @param yield The % of blocks to drop
      * @param event The {@link EntityExplodeEvent}
      */
-    //TODO: Rewrite this garbage
-    //TODO: Rewrite this garbage
-    //TODO: Rewrite this garbage
-    //TODO: Rewrite this garbage
-    //TODO: Rewrite this garbage
-    //TODO: Rewrite this garbage
-    //TODO: Rewrite this garbage
-    //TODO: Rewrite this garbage
-    //TODO: Rewrite this garbage
-    //TODO: Rewrite this garbage
-    //TODO: Rewrite this garbage
-    //TODO: Rewrite this garbage
-    //TODO: Rewrite this garbage
-    //TODO: Rewrite this garbage
-    //TODO: Rewrite this garbage
-    //TODO: Rewrite this garbage
-    //TODO: Rewrite this garbage
-    //TODO: Rewrite this garbage
-    //TODO: Rewrite this garbage
-    //TODO: Rewrite this garbage
-    //TODO: Rewrite this garbage
-    //TODO: Rewrite this garbage
-    //TODO: Rewrite this garbage
     //TODO: Rewrite this garbage
     public void blastMiningDropProcessing(float yield, EntityExplodeEvent event) {
         if (yield == 0)
@@ -181,19 +165,24 @@ public class MiningManager extends SkillManager {
         int xp = 0;
 
         float oreBonus = (float) (getOreBonus() / 100);
-        //TODO: Pretty sure something is fucked with debrisReduction stuff
         float debrisReduction = (float) (getDebrisReduction() / 100);
         int dropMultiplier = getDropMultiplier();
         float debrisYield = yield - debrisReduction;
 
         //Drop "debris" based on skill modifiers
         for(BlockState blockState : notOres) {
+            if(isDropIllegal(blockState.getType()))
+                continue;
+
             if(RandomUtils.nextFloat() < debrisYield) {
                 Misc.spawnItem(getPlayer(), Misc.getBlockCenter(blockState), new ItemStack(blockState.getType()), ItemSpawnReason.BLAST_MINING_DEBRIS_NON_ORES); // Initial block that would have been dropped
             }
         }
 
         for (BlockState blockState : ores) {
+            if(isDropIllegal(blockState.getType()))
+                continue;
+
             if (RandomUtils.nextFloat() < (yield + oreBonus)) {
                 xp += Mining.getBlockXp(blockState);
 
@@ -214,6 +203,17 @@ public class MiningManager extends SkillManager {
 //        event.blockList().addAll(notOres);
 
         applyXpGain(xp, XPGainReason.PVE);
+    }
+
+    /**
+     * Checks if it would be illegal (in vanilla) to obtain the block
+     * Certain things should never drop ( such as budding_amethyst )
+     *
+     * @param material target material
+     * @return true if it's not legal to obtain the block through normal gameplay
+     */
+    public boolean isDropIllegal(@NotNull Material material) {
+        return material.getKey().getKey().equalsIgnoreCase(BUDDING_AMETHYST);
     }
 
     /**

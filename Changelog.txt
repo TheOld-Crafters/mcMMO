@@ -1,5 +1,17 @@
 Version 2.1.201
+    Tweaked the visual/audio effect for Rupture
+    (API) TNT is set as the source in Blast Mining (1.16.1 and up)
+    Fixed an exploit related to Ability Buffs remaining on tools
+    Blast Mining no longer drops Budding Amethyst since its not legal to obtain this item through normal gameplay
+    Added mcinspect and mmoinspect aliases to inspect command
     Portuguese translation of Woodcutting changed back to Lenhador
+    Updated zh_CN (Chinese) locale, thanks GhostDC!
+    Major changes to zh_TW locale, thanks gregman98
+    Added '/skill keep' shortcut (for example /mining keep) thanks GriffinCodes
+    Impact is now more balanced as the formula has been changed (see notes) thanks emanondev
+
+    NOTES:
+    Impact will deal less durability damage to armors without unbreaking, and more to armors with unbreaking
 
 Version 2.1.200
     Fixed a major 1.17 exploit
